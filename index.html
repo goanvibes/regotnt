@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rego Tours & Travels - Your Gateway to Unforgettable Journeys</title>
+    <meta name="description" content="Book interstate bus tickets, Goa tour packages, and car rentals with Rego Tours & Travels, established in 1994. Serving Goa to Mumbai, Pune, Hyderabad and more.">
+    <meta name="keywords" content="Goa travel, bus tickets, Goa tours, car rental Goa, Rego Tours">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS RESET & ROOT VARIABLES --- */
+        :root {
+            --primary-color: #007BFF; /* Trustworthy blue for travel */
+            --secondary-color: #FFA500; /* Vibrant orange for excitement */
+            --background-color: #FFFFFF;
+            --text-color: #343A40;
+            --accent-color: #F8F9FA;
+            --heading-font: 'Montserrat', sans-serif;
+            --body-font: 'Lato', sans-serif;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--body-font);
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        /* --- LOADING ANIMATION --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader-svg {
+            width: 150px;
+            overflow: visible;
+        }
+        .bus-path {
+            stroke: var(--accent-color);
+            stroke-width: 4;
+            fill: none;
+        }
+        .bus-body {
+            stroke: var(--primary-color);
+            stroke-width: 4;
+            fill: var(--background-color);
+            animation: bus-move 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+        @keyframes bus-move {
+            0% { motion-offset: 0%; }
+            100% { motion-offset: 100%; }
+        }
+
+        /* --- UTILITY & ANIMATION CLASSES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .section {
+            padding: 5rem 0;
+        }
+        h1, h2, h3 {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        h1 { font-size: 3rem; margin-bottom: 1.5rem; color: #fff;}
+        h2 { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
+        p { margin-bottom: 1rem; }
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        .btn-secondary:hover {
+            background-color: #e69500;
+        }
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SEASONAL BANNER --- */
+        .seasonal-banner {
+            background: linear-gradient(45deg, var(--secondary-color), #ffc107);
+            color: #fff;
+            text-align: center;
+            padding: 0.8rem 1rem;
+            font-weight: 700;
+            font-size: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        .main-header {
+            position: fixed;
+            top: 45px; /* Adjust for banner height */
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+        .main-header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            box-shadow: var(--shadow);
+            top: 0;
+        }
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: var(--heading-font);
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .main-header.scrolled .logo, .main-header.scrolled .nav-link {
+            color: var(--primary-color);
+        }
+        .main-nav { list-style: none; }
+        .main-nav li { display: inline-block; margin-left: 2rem; }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover { color: var(--secondary-color); }
+        .mobile-nav-toggle { display: none; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,.6)), url('regoTNT.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        .hero-content {
+            max-width: 800px;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* --- SERVICES SECTION --- */
+        #services { background-color: var(--accent-color); }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .service-card {
+            background-color: #fff;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        .service-card svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1.5rem;
+            fill: var(--primary-color);
+        }
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- TRUST/WHY US SECTION --- */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        .trust-item svg {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 1rem;
+            stroke: var(--secondary-color);
+            fill: none;
+            stroke-width: 1.5;
+        }
+        .trust-item h3 { font-size: 1.2rem; }
+
+        /* --- PRICING SECTION --- */
+        #pricing { background-color: var(--accent-color); }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+        .pricing-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--primary-color);
+        }
+        .pricing-card.featured {
+            transform: scale(1.05);
+            border-top-color: var(--secondary-color);
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+        .pricing-card h3 { font-size: 1.5rem; }
+        .price {
+            font-size: 2.5rem;
+            font-family: var(--heading-font);
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+        .price span { font-size: 1rem; color: var(--text-color); }
+        .features-list { list-style: none; margin: 2rem 0; }
+        .features-list li { margin-bottom: 0.8rem; }
+        .features-list li::before {
+            content: '✓';
+            color: var(--secondary-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* --- GALLERY/SHOWCASE SECTION --- */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 10px;
+            box-shadow: var(--shadow-hover);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- TESTIMONIALS SECTION --- */
+        #testimonials { background-color: var(--accent-color); }
+        .testimonial-carousel {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: #fff;
+            padding: 3rem;
+        }
+        .testimonial-slide {
+            display: none;
+            text-align: center;
+        }
+        .testimonial-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .testimonial-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .carousel-btn {
+            background: rgba(0, 123, 255, 0.7);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            transition: background 0.3s ease;
+            margin: 0 1rem;
+        }
+        .carousel-btn:hover { background: var(--primary-color); }
+
+        /* --- CONTACT SECTION --- */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: flex-start;
+        }
+        .contact-info p { margin-bottom: 1.5rem; }
+        .contact-info svg {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 0.8rem;
+            fill: var(--primary-color);
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: var(--body-font);
+        }
+        .map-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 100%;
+            min-height: 400px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .final-cta {
+            background: linear-gradient(45deg, var(--primary-color), #0056b3);
+            color: #fff;
+            text-align: center;
+            padding: 4rem 1rem;
+            border-radius: 10px;
+            margin-top: 4rem;
+        }
+        .final-cta h2 { color: #fff; }
+
+        /* --- FOOTER --- */
+        .main-footer {
+            background-color: var(--text-color);
+            color: #ccc;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .footer-logo {
+            font-family: var(--heading-font);
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .footer-links { list-style: none; }
+        .footer-links li { display: inline-block; margin: 0 1rem; }
+        .footer-links a { color: #ccc; text-decoration: none; }
+        .footer-links a:hover { color: var(--secondary-color); }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            html { font-size: 15px; }
+            .main-header { top: 60px; /* Adjust for taller banner on mobile */ }
+            .main-nav {
+                display: none; /* Simple hiding for this example, a real site would have a hamburger menu */
+            }
+            .mobile-nav-toggle {
+                display: block; /* Placeholder for hamburger icon */
+                color: #fff;
+                font-size: 1.5rem;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+            .main-header.scrolled .mobile-nav-toggle { color: var(--primary-color); }
+            .pricing-card.featured { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <svg class="loader-svg" viewBox="0 0 200 50">
+            <path id="bus-track" class="bus-path" d="M10 25 Q 100 -5, 190 25" />
+            <g class="bus-body">
+                <path d="M7,13 H3 V7.5 A1.5,1.5 0 0 1 4.5,6 H7 Z M31,13 H35 V7.5 A1.5,1.5 0 0 0 33.5,6 H31 Z M38,13.5 a0.5,0.5 0 0 0 0.5,-0.5 V6.5 a2.5,2.5 0 0 0 -2.5,-2.5 H2.5 A2.5,2.5 0 0 0 0,6.5 v6.5 a0.5,0.5 0 0 0 0.5,0.5 H3 v1.5 H0.5 a0.5,0.5 0 0 0 -0.5,0.5 v4 a0.5,0.5 0 0 0 0.5,0.5 H2 a2,2 0 0 0 4,0 h26 a2,2 0 0 0 4,0 h1.5 a0.5,0.5 0 0 0 0.5,-0.5 v-4 a0.5,0.5 0 0 0 -0.5,-0.5 H35 V15 h3.5 a0.5,0.5 0 0 0 0.5,-0.5 Z M5,20 a1,1 0 1 1 -2,0 1,1 0 0 1 2,0 Z M33,20 a1,1 0 1 1 -2,0 1,1 0 0 1 2,0 Z" transform="translate(0, 0) scale(1.2)">
+                    <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
+                        <mpath xlink:href="#bus-track"></mpath>
+                    </animateMotion>
+                </path>
+            </g>
+        </svg>
+    </div>
+
+    <div class="seasonal-banner">
+        ✨ Diwali Vacation Rush is Here! Book your bus tickets to Mumbai, Pune, or Hyderabad now! Limited seats available!
+    </div>
+
+    <header class="main-header" id="main-header">
+        <div class="container">
+            <a href="#" class="logo">Rego Tours</a>
+            <nav>
+                <ul class="main-nav">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#pricing" class="nav-link">Packages</a></li>
+                    <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-nav-toggle">&#9776;</button> </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content scroll-reveal">
+                <h1>Your Gateway to Unforgettable Journeys</h1>
+                <p>Established in 1994, Rego Tours & Travels is your trusted partner for exploring Goa and beyond. From bus tickets to custom tour packages, we make your travel dreams a reality.</p>
+                <a href="#pricing" class="btn btn-secondary">Explore Packages</a>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <div class="container">
+                <h2 class="scroll-reveal">Our Premier Services</h2>
+                <div class="services-grid">
+                    <div class="service-card scroll-reveal" style="transition-delay: 0.1s;">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11C5.84 5 5.28 5.42 5.08 6.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"></path></svg>
+                        <h3>Interstate Bus Service</h3>
+                        <p>Comfortable and reliable A/C & Non-A/C sleeper coaches to Mumbai, Pune, Hyderabad, and more. Travel with top operators like Neeta, VRL, and Dolphin.</p>
+                    </div>
+                    <div class="service-card scroll-reveal" style="transition-delay: 0.2s;">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                        <h3>Goa Tour Packages</h3>
+                        <p>Discover the best of Goa with our curated North & South Goa sightseeing tours. Experience the culture, beaches, and heritage with our expert guides.</p>
+                    </div>
+                    <div class="service-card scroll-reveal" style="transition-delay: 0.3s;">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14 4.14 5.57 2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"></path></svg>
+                        <h3>Car & Tempo Rentals</h3>
+                        <p>Explore Goa at your own pace. We offer a wide range of cars and tempo travellers for rent, perfect for families and groups of any size.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="trust" class="section">
+            <div class="container">
+                <h2 class="scroll-reveal">Why Choose Rego Tours?</h2>
+                <div class="trust-grid">
+                    <div class="trust-item scroll-reveal" style="transition-delay: 0.1s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" /><path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M18 16.5v1.5l.5 .5" /><path d="M15 3v4" /><path d="M7 3v4" /><path d="M3 11h16" /></svg>
+                        <h3>30+ Years of Experience</h3>
+                        <p>Established in 1994, our legacy is built on trust, reliability, and unparalleled customer service.</p>
+                    </div>
+                    <div class="trust-item scroll-reveal" style="transition-delay: 0.2s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9l3 3l-3 3" /><path d="M13 15h3" /><path d="M18 4a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-10a3 3 0 0 1 3 -3h12z" /></svg>
+                        <h3>Wide Network of Routes</h3>
+                        <p>We connect Goa to major cities and offer extensive local tours, ensuring you can get wherever you need to go.</p>
+                    </div>
+                    <div class="trust-item scroll-reveal" style="transition-delay: 0.3s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10h3v-3" /><path d="M10 7l-6 6" /><path d="M14 17h3v-3" /><path d="M17 14l-6 6" /><path d="M21 12a9 9 0 1 0 -9.866 8.928" /></svg>
+                        <h3>Open 24 Hours</h3>
+                        <p>Our offices in Panjim and Mapusa are open 24/7 to assist you with your travel plans, anytime you need us.</p>
+                    </div>
+                     <div class="trust-item scroll-reveal" style="transition-delay: 0.4s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                        <h3>Top-Rated Partners</h3>
+                        <p>We work with the most reputable bus operators in the industry to guarantee your safety and comfort.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="section">
+            <div class="container">
+                <h2 class="scroll-reveal">Popular Packages & Fares</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card scroll-reveal" style="transition-delay: 0.1s;">
+                        <h3>North Goa Tour</h3>
+                        <div class="price">₹400 <span>/ person</span></div>
+                        <ul class="features-list">
+                            <li>Visit Calangute & Baga Beach</li>
+                            <li>Explore Fort Aguada</li>
+                            <li>Anjuna Flea Market</li>
+                            <li>Comfortable A/C Coach</li>
+                        </ul>
+                        <button class="btn" onclick="openWhatsApp('North Goa Tour')">Book on WhatsApp</button>
+                    </div>
+                    <div class="pricing-card featured scroll-reveal" style="transition-delay: 0.2s;">
+                        <h3>Goa to Mumbai Bus</h3>
+                        <div class="price">From ₹1200 <span>/ seat</span></div>
+                        <ul class="features-list">
+                            <li>A/C Sleeper & Seater Options</li>
+                            <li>Multi-axel Volvo Coaches</li>
+                            <li>Daily Departures</li>
+                            <li>Online & Offline Booking</li>
+                        </ul>
+                        <button class="btn btn-secondary" onclick="openWhatsApp('Goa to Mumbai Bus Ticket')">Book on WhatsApp</button>
+                    </div>
+                    <div class="pricing-card scroll-reveal" style="transition-delay: 0.3s;">
+                        <h3>South Goa Tour</h3>
+                        <div class="price">₹400 <span>/ person</span></div>
+                        <ul class="features-list">
+                            <li>Old Goa Churches</li>
+                            <li>Dona Paula & Miramar Beach</li>
+                            <li>Mangueshi Temple</li>
+                            <li>Mandovi River Cruise (Optional)</li>
+                        </ul>
+                        <button class="btn" onclick="openWhatsApp('South Goa Tour')">Book on WhatsApp</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="section">
+             <div class="container">
+                 <h2 class="scroll-reveal">Experience Goa With Us</h2>
+                 <div class="video-container scroll-reveal">
+                     <iframe src="https://www.youtube.com/embed/ul2G5n5-pAI?autoplay=0&mute=1&controls=1&loop=1&playlist=ul2G5n5-pAI" title="Goa Tourism Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                 </div>
+            </div>
+        </section>
+        
+        <section id="testimonials" class="section">
+            <div class="container">
+                <h2 class="scroll-reveal">What Our Customers Say</h2>
+                <div class="testimonial-carousel scroll-reveal">
+                    <div class="testimonial-slide active">
+                        <p class="testimonial-text">"Booking my bus ticket to Pune with Rego Tours was seamless. The staff at the Panjim office were incredibly helpful. The bus was clean and on time. Highly recommended!"</p>
+                        <p class="testimonial-author">- Anjali P., Mumbai</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <p class="testimonial-text">"We took the South Goa tour package and it was fantastic value for money. Our guide was knowledgeable and friendly, and we saw all the major sights without any hassle."</p>
+                        <p class="testimonial-author">- David & Sarah, UK</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <p class="testimonial-text">"Rented a Tempo Traveller for our group of 10. The vehicle was in excellent condition and the driver was very professional. Made our Goa trip so much more convenient. Thank you, Rego Tours!"</p>
+                        <p class="testimonial-author">- Rohan Desai, Hyderabad</p>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev-btn">&lt;</button>
+                        <button class="carousel-btn next-btn">&gt;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="scroll-reveal">Get In Touch</h2>
+                <div class="contact-grid">
+                    <div class="contact-info scroll-reveal" style="transition-delay: 0.1s;">
+                        <h3>Contact Us Directly</h3>
+                        <p>Have questions or need to make a booking? Reach out to us. We're open 24 hours!</p>
+                        <p>
+                            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z"></path></svg>
+                            <a href="tel:+910000000000">+91-123-456-7890</a> (Panjim)
+                        </p>
+                        <p>
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
+                            <a href="mailto:contact@regotours.com">contact@regotours.com</a>
+                        </p>
+                        <p>
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                            <b>Panjim Office:</b> Rego Hotel Complex, Near KTC Bus Stand, Panjim, Goa
+                        </p>
+                        <p>
+                             <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                            <b>Mapusa Office:</b> Shop No T-27, Opp. Taxi Stand, Mapusa, Goa
+                        </p>
+                        <div class="final-cta">
+                            <h2>Ready for your next adventure?</h2>
+                            <p>Click the button below to start a conversation with our travel experts on WhatsApp!</p>
+                            <button class="btn btn-secondary" onclick="openWhatsApp('General Inquiry')">Chat With Us</button>
+                        </div>
+                    </div>
+                    <div class="map-container scroll-reveal" style="transition-delay: 0.2s;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3844.7551047648316!2d73.8306059758784!3d15.498188151249712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbfc0a562c55555%3A0x675403e911475754!2sKTC%20Bus%20Stand%20Panjim!5e0!3m2!1sen!2sin!4v1697554522901!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div>
+                <div class="footer-logo">Rego Tours & Travels</div>
+                <p>Your Trusted Travel Partner Since 1994</p>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#pricing">Packages</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <p>&copy; <span id="current-year"></span> Rego Tours & Travels (ATMARAM GOA). All Rights Reserved.<br>GSTIN: 30ABUPR9818G1Z5</p>
+        </div>
+    </footer>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- PRELOADER ---
+        const loader = document.getElementById('loader');
+        window.addEventListener('load', () => {
+            loader.classList.add('hidden');
+        });
+
+        // --- HEADER SCROLL EFFECT ---
+        const header = document.getElementById('main-header');
+        const banner = document.querySelector('.seasonal-banner');
+        const bannerHeight = banner ? banner.offsetHeight : 0;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > bannerHeight + 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- ON-SCROLL FADE/SLIDE-IN ANIMATION ---
+        const scrollElements = document.querySelectorAll('.scroll-reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        scrollElements.forEach(el => observer.observe(el));
+
+        // --- SMOOTH SCROLLING FOR NAV LINKS ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // --- TESTIMONIAL CAROUSEL ---
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const nextBtn = document.querySelector('.next-btn');
+        const prevBtn = document.querySelector('.prev-btn');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        
+        // Auto-play carousel
+        setInterval(nextSlide, 5000);
+
+
+        // --- FOOTER CURRENT YEAR ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    });
+    
+    // --- WHATSAPP CTA FUNCTION ---
+    function openWhatsApp(service) {
+        // A real website might pop up a modal here to collect user's name first.
+        const name = prompt("Please enter your name to proceed with the booking:");
+        if (name === null || name.trim() === "") {
+            alert("Name is required to proceed.");
+            return;
+        }
+
+        const whatsappNumber = "911234567890"; // IMPORTANT: Replace with the actual business WhatsApp number
+        let message = `Hello Rego Tours & Travels,
+
+My name is ${name}.
+I'm interested in booking the *${service}*.
+
+Could you please provide me with more details?
+
+Thank you.`;
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        
+        window.open(whatsappURL, '_blank');
+    }
+    </script>
+</body>
+</html>
